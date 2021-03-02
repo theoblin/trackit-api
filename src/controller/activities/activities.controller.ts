@@ -1,4 +1,4 @@
-import {Controller, Get, HttpException, InternalServerErrorException, Param} from '@nestjs/common';
+import {Body, Controller, Get, HttpException, InternalServerErrorException, Param} from '@nestjs/common';
 import { ActivitiesService } from '../../service/activities/activities.service';
 import { ActivitiesDto } from '../../dto/activities.dto';
 import {throwError} from "rxjs";
@@ -10,9 +10,9 @@ export class ActivitiesController {
 
   @Get('')
   @ApiOkResponse({description: 'Activities payloads'})
-  getActivities(): any {
+  getActivities(@Body('startDate')startDate: string, @Body('endDate')endDate:string ): any {
     try{
-      return this.activitiesService.getAllActivities().then((activity) => {
+      return this.activitiesService.getAllActivities(startDate, endDate).then((activity) => {
         if(!activity){
           return ActivitiesController.handleError(Error(), 'err.get.activities', 'Failed to get activities');
         }

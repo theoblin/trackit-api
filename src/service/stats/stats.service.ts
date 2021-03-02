@@ -20,12 +20,12 @@ const currentUser = 'VXq4OUKqx1ZxxfciCrBCGwOzvGM2';
 @Injectable()
 export class StatsService {
   constructor(private activitiesService: ActivitiesService) {
-    this.updateBestScore();
-    this.updateTotalDistance();
+    this.updateBestScore('2018-01-01', '2023-01-01');
+    this.updateTotalDistance('2018-01-01', '2023-01-01');
   }
 
-  async updateTotalDistance():  Promise<void> {
-    this.activitiesService.getAllActivities().then((activities) =>
+  async updateTotalDistance(startDate, endStart):  Promise<void> {
+    this.activitiesService.getAllActivities(startDate, endStart).then((activities) =>
       db.collection('stats')
         .doc('91Ve3sL5KElMuKfAzZVr')
         .update({
@@ -37,8 +37,8 @@ export class StatsService {
     );
   }
 
-    async updateBestDistance(): Promise<void> {
-        this.activitiesService.getAllActivities().then((activities) =>
+    async updateBestDistance(startDate, endStart): Promise<void> {
+        this.activitiesService.getAllActivities(startDate, endStart).then((activities) =>
             db.collection('stats')
                 .doc('91Ve3sL5KElMuKfAzZVr')
                 .update({
@@ -47,8 +47,8 @@ export class StatsService {
         );
     }
 
-  async updateBestScore(): Promise<any> {
-    this.activitiesService.getAllActivities().then((activities) =>
+  async updateBestScore(startDate, endStart): Promise<any> {
+    this.activitiesService.getAllActivities(startDate, endStart).then((activities) =>
       db.collection('stats')
         .doc('91Ve3sL5KElMuKfAzZVr')
         .update({

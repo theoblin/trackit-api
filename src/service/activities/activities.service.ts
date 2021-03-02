@@ -20,12 +20,12 @@ const currentUser = 'VXq4OUKqx1ZxxfciCrBCGwOzvGM2';
 @Injectable()
 export class ActivitiesService {
 
-  async getAllActivities(): Promise<FirebaseFirestore.DocumentData[] | ActivitiesDto[]> {
+  async getAllActivities(startDate: string,endDate:string): Promise<FirebaseFirestore.DocumentData[] | ActivitiesDto[]> {
     return await db
       .collection('activities')
       .where('user', '==', currentUser)
-      .where('start_date_local', '>=', new Date('2021-01-01').getTime())
-      .where('start_date_local', '<=', new Date('2023-01-28').getTime())
+      .where('start_date_local', '>=', new Date(startDate).getTime())
+      .where('start_date_local', '<=', new Date(endDate).getTime())
       .get()
       .then((docs) => {
         return docs.docs.map((doc) => doc.data());
