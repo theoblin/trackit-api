@@ -24,10 +24,9 @@ export class StatsService {
     this.updateTotalDistance();
   }
 
-  async updateTotalDistance(): Promise<any> {
+  async updateTotalDistance():  Promise<void> {
     this.activitiesService.getAllActivities().then((activities) =>
-      db
-        .collection('stats')
+      db.collection('stats')
         .doc('91Ve3sL5KElMuKfAzZVr')
         .update({
           total_distance: activities
@@ -38,10 +37,19 @@ export class StatsService {
     );
   }
 
+    async updateBestDistance(): Promise<void> {
+        this.activitiesService.getAllActivities().then((activities) =>
+            db.collection('stats')
+                .doc('91Ve3sL5KElMuKfAzZVr')
+                .update({
+                    best_distance: (Math.max(...activities.map(o => o.distance.toFixed(2)), 0))
+                }),
+        );
+    }
+
   async updateBestScore(): Promise<any> {
     this.activitiesService.getAllActivities().then((activities) =>
-      db
-        .collection('stats')
+      db.collection('stats')
         .doc('91Ve3sL5KElMuKfAzZVr')
         .update({
           best_score: activities.find(
