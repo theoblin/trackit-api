@@ -14,7 +14,6 @@ if (!admin.apps.length) {
   });
 }
 const db = admin.firestore();
-
 const currentUser = 'VXq4OUKqx1ZxxfciCrBCGwOzvGM2';
 
 @Injectable()

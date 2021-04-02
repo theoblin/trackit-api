@@ -37,6 +37,7 @@ export class ActivitiesDto {
      start_date_local: any,
      score: any,
   ) {
+
     this.upload_id_str = upload_id_str;
     this.name = name;
     this.distance = distance;

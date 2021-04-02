@@ -1,16 +1,19 @@
-import {Body, Controller, Get, HttpException, InternalServerErrorException, Param} from '@nestjs/common';
+import {Controller, Get, HttpException, InternalServerErrorException, Query} from '@nestjs/common';
 import { ActivitiesService } from '../../service/activities/activities.service';
 import { ActivitiesDto } from '../../dto/activities.dto';
-import {throwError} from "rxjs";
 import {ApiBody, ApiNotFoundResponse, ApiOkResponse} from "@nestjs/swagger";
 
 @Controller('/api/v1/activities')
+
 export class ActivitiesController {
+
   constructor(private activitiesService: ActivitiesService) {}
 
+  // Get all activities
   @Get('')
   @ApiOkResponse({description: 'Activities payloads'})
-  getActivities(@Body('startDate')startDate: string, @Body('endDate')endDate:string ): any {
+  getActivities(@Query('startDate')startDate: string,
+                @Query('endDate')endDate:string ): any {
     try{
       return this.activitiesService.getAllActivities(startDate, endDate).then((activity) => {
         if(!activity){
@@ -24,11 +27,12 @@ export class ActivitiesController {
     }
   }
 
+  // Get an activity by ID
   @Get(':id')
   @ApiBody({type: ActivitiesDto})
   @ApiNotFoundResponse({description: 'Activity not found'})
   @ApiOkResponse({description: 'Activity payload'})
-  getActivitiesById(@Param('id') id): any {
+  getActivitiesById(@Query('id') id): any {
     try{
       return this.activitiesService.getActivitiesById(id).then((activity) => {
         if(!activity){

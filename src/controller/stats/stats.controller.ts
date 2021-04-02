@@ -6,6 +6,7 @@ import {ApiOkResponse} from "@nestjs/swagger";
 export class StatsController {
   constructor(private statsService: StatsService) {}
 
+  //Get all stats
   @Get('')
   @ApiOkResponse({description: 'User statistics'})
   getAllStats(): any {
@@ -16,14 +17,15 @@ export class StatsController {
     }
   }
 
-/*  @Get('/test')
-  test(): any {
-    try {
-      return this.statsService.updateBestDistance();
-    } catch (e) {
-      return StatsController.handleError(e, 'err.update', 'Failed to update best distance');
-    }
-  }*/
+  // unused
+  /*  @Get('/test')
+    test(): any {
+      try {
+        return this.statsService.updateBestDistance();
+      } catch (e) {
+        return StatsController.handleError(e, 'err.update', 'Failed to update best distance');
+      }
+    }*/
 
   private static handleError(error: Error, code: string, defaultMessage: string) {
     const objectOrError = { code, message: defaultMessage, detail: error };

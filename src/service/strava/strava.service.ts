@@ -1,7 +1,7 @@
-import {HttpService, Injectable} from '@nestjs/common';
+import {HttpException, HttpService, Injectable} from '@nestjs/common';
 import * as admin from "firebase-admin";
 import {environment} from "../../../environment";
-import {map} from "rxjs/operators";
+import {catchError, map} from "rxjs/operators";
 import { AxiosResponse } from 'axios';
 import {ActivitiesDto} from "../../dto/activities.dto";
 
@@ -24,34 +24,39 @@ export class StravaService {
     constructor(private httpService: HttpService) {}
 
     saveTokens(accessToken: string, refreshToken: string): any {
-        db.collection('users').doc(currentUser).update({
-            access_token: accessToken,
-            refresh_token: refreshToken,
-            lastSync: new Date()
+        db.collection('users')
+            .doc(currentUser)
+            .update({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+                lastSync: new Date().getTime().toString()
         });
     }
-    async getActivities(token: string): Promise<any> {
-        return  this.httpService.get<any>(environment.ACTIVITIESLINK + token).pipe(
-            await map((axiosResponse: AxiosResponse) => {
-                let activities = [];
-                axiosResponse.data.map((activity) =>{
-                    activities.push(
-                        new ActivitiesDto(
-                        activity.upload_id_str,
-                        activity.name,
-                        activity.distance,
-                        activity.elapsed_time,
-                        activity.moving_time,
-                        activity.type,
-                        new Date(activity.start_date_local).getTime(),
-                        this.scoreCalculator(activity.distance, activity.moving_time / 60),
+     getActivities(token: string): any {
+              return this.httpService.get<any>(environment.ACTIVITIESLINK + token)
+              .pipe(
+                catchError(e => {
+                throw new HttpException(e.response.data, e.response.status)}),
+                 map((axiosResponse: AxiosResponse) => {
+                    let activities = [];
+                    axiosResponse.data.map((activity) =>{
+                        activities.push(
+                            new ActivitiesDto(
+                            activity.upload_id_str,
+                            activity.name,
+                            activity.distance,
+                            activity.elapsed_time,
+                            activity.moving_time,
+                            activity.type,
+                            new Date(activity.start_date_local).getTime(),
+                            this.scoreCalculator(activity.distance, activity.moving_time / 60),
+                            )
                         )
-                    )
+                    })
+                    return  activities;
                 })
-                return  activities;
-            })
-        );
-    }
+            );
+        }
 
     scoreCalculator(distance: number, time: any): number{
         const kmh = (distance ) / time;

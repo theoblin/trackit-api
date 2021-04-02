@@ -1,8 +1,8 @@
 import {
   BadRequestException,
   Body,
-  Controller,
-  Post,
+  Controller, Get,
+  Post, Query,
   UseFilters
 } from '@nestjs/common';
 import { UserDto } from '../../dto/user.dto';
@@ -12,7 +12,9 @@ import {ApiBadRequestResponse, ApiOkResponse} from "@nestjs/swagger";
 
 @Controller('/api/v1/user')
 export class UserController {
+
   constructor(private userService: UserService) {}
+  //unused
 
   @Post('/signin')
   @UseFilters(new HttpExceptionFilter())
@@ -20,17 +22,22 @@ export class UserController {
   @ApiBadRequestResponse({description: "Invalid user"})
   createPublication(@Body() user: UserDto): any {
     try {
-      return this.userService.login(user)
+      return this.userService
+          .login(user)
           .then((u) => {
-          return u
+            return u
           }).catch((error) => {
             return error.errorMessage
           })
 
     } catch (e) {
-      throw new BadRequestException(e.message,e.message);
+      throw new BadRequestException(e.message, e.message);
     }
   }
-
-
+  // Get trackit user by ID
+  @Get(':id')
+  getUserById(@Query('id') id): any {
+    return this.userService
+        .getUserById(id)
+  }
 }
